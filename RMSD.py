@@ -5,8 +5,8 @@
 """ Programme RMSD """
 from math import sqrt
 #### PARCER PDB #######
-from ParcerAdrienHenriques import ParcerPDB
-from ParcerAdrienHenriques import Affichage
+from ParserAdrienHenriques import ParcerPDB
+from ParserAdrienHenriques import Affichage
 
 def RMSD(fichier1, fichier2):
 	resultat=list()
@@ -33,12 +33,12 @@ def RMSD(fichier1, fichier2):
 
 
 fichier1 = raw_input ("Saississez le nom de votre fichier avec le format (ex: arginine.pdb):")
-result_fichier1 = ParcerPDB(fichier1)
-#Affichage(result_fichier1)
+result_fichier1 = ParserPDB(fichier1)
+Affichage(result_fichier1)
 
 fichier2 = raw_input ("Saississez le nom de votre fichier avec le format (ex: arginine.pdb):")
-result_fichier2 = ParcerPDB(fichier2)
-#Affichage(result_fichier2)
+result_fichier2 = ParserPDB(fichier2)
+Affichage(result_fichier2)
 
 calcul= RMSD(result_fichier1, result_fichier2)
 print calcul

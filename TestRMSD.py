@@ -16,8 +16,9 @@ def RMSD(fichier):
 	RmsdTot=0
 	for prot1 in fichier.keys():
 		for prot2 in fichier.keys():
+			RmsdTot=0
 			if prot2 not in prot1:
-				RmsdTot=0
+				
 				for residu in fichier[prot1].keys():
 					RmsdFinal=list()
 					RmsdPosition=0
@@ -34,10 +35,11 @@ def RMSD(fichier):
 									distance+= mesure**2
 							resultat.append(distance)
 						RmsdPosition=sqrt(sum(resultat)/compteur)
+						
 					RmsdFinal.append(RmsdPosition)
 					RmsdTot= sum(RmsdFinal)
-				print (distance)
-			RmsdFichier.append(str(prot1)+" "+str(prot2)+" "+str(RmsdTot)+" , ")
+					print (RmsdTot)
+				RmsdFichier.append(str(prot1)+" "+str(prot2)+" "+str(RmsdTot)+" , ")
 	return (RmsdFichier)
 	
 	

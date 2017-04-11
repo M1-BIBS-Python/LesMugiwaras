@@ -13,27 +13,32 @@ def RMSD(fichier):
 	distance=0
 	RmsdFinal=list()
 	RmsdFichier=list()
+	RmsdTot=0
 	for prot1 in fichier.keys():
 		for prot2 in fichier.keys():
-			if prot2 != prot1:
-				
+			if prot2 not in prot1:
+				RmsdTot=0
 				for residu in fichier[prot1].keys():
+					RmsdFinal=list()
+					RmsdPosition=0
 					for posi in fichier[prot1][residu].keys():
 						compteur=0
-						mesure=0
 						resultat=list()
 						for atome in fichier[prot1][residu][posi].keys():
+							distance=0
 							for atome2 in fichier[prot2][residu][posi].keys():
 								if atome2==atome:
-									mesure=sqrt((float(fichier[prot1][residu][posi][atome]["x"])-float(fichier[prot2][residu][posi][atome2]["x"]))**2+(float(fichier1[residu][posi][atome]["y"])-float(fichier2[residu][posi][atome2]["y"]))**2+(float(fichier1[residu][posi][atome]["z"])-float(fichier2[residu][posi][atome2]["z"]))**2)
+									mesure=0
+									mesure=sqrt((float(fichier[prot1][residu][posi][atome]["x"])-float(fichier[prot2][residu][posi][atome2]["x"]))**2+(float(fichier[prot1][residu][posi][atome]["y"])-float(fichier[prot2][residu][posi][atome2]["y"]))**2+(float(fichier[prot1][residu][posi][atome]["z"])-float(fichier[prot2][residu][posi][atome2]["z"]))**2)
 									compteur+=1
 									distance+= mesure**2
-						resultat.append(distance)
+							resultat.append(distance)
 						RmsdPosition=sqrt(sum(resultat)/compteur)
 					RmsdFinal.append(RmsdPosition)
 					RmsdTot= sum(RmsdFinal)
-		Rmsdfichier.append(prot1+" "+prot2+" "+RmsdTot+"\n")
-	return (RmsdTot)
+				print (distance)
+			RmsdFichier.append(str(prot1)+" "+str(prot2)+" "+str(RmsdTot)+" , ")
+	return (RmsdFichier)
 	
 	
 	
@@ -44,7 +49,7 @@ def RMSD(fichier):
 
 fichier1 = raw_input ("Saississez le nom de votre fichier avec le format (ex: arginine.pdb):")
 result_fichier1 = ParserPDB(fichier1)
-Affichage(result_fichier1)
+#Affichage(result_fichier1)
 
-#calcul= RMSD(result_fichier1)
-#print calcul
+calcul= RMSD(result_fichier1)
+print calcul

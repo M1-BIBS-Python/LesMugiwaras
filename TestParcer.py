@@ -23,24 +23,24 @@ def ParserPDB(a):
 				acidea[newProt]={}
 				
 		if contenu[chain][0:4]=="ATOM":   #Si la ligne commence par "ATOM" 
-			Chaine = contenu[chain][21]
+			chaine = contenu[chain][21]
 			
-			if Chaine not in acidea[newProt].keys(): #Si la chaine ( A, B ... ) existe pas deja 
-				acidea[newProt][Chaine] = {}     #creation du dictionnaire qui a pour nom les caractères a la ligne 21 ( Chaine)
+			if chaine not in acidea[newProt].keys(): #Si la chaine ( A, B ... ) existe pas deja 
+				acidea[newProt][chaine] = {}     #creation du dictionnaire qui a pour nom les caractères a la ligne 21 ( chaine)
 			
-			Posi = contenu[chain][24:26]
-			if Posi not in acidea[newProt][Chaine].keys(): #Si la position pour une chaine n'existe pas deja (ex : -3 dans la chaine A)
-				acidea[newProt][Chaine][Posi]={} # creation du dictionnaire poisition dans le dictionnaire chaine 
+			residu = contenu[chain][24:26]
+			if residu not in acidea[newProt][chaine].keys(): #Si la residution pour une chaine n'existe pas deja (ex : -3 dans la chaine A)
+				acidea[newProt][chaine][residu]={} # creation du dictionnaire poisition dans le dictionnaire chaine 
 			
-			residu = contenu[chain][12:16]
-			if residu not in acidea[newProt][Chaine][Posi].keys(): #si le residu n'existe pas deja pour une chaine et une position donnée (ex : un CO de la chaine A a la position -3)
-				acidea[newProt][Chaine][Posi][residu]= {}  #Creation du dictionnaire nom de l'atome, contenu dans le dictionnaire position lui meme contenu dans le dictionnaire chaine	
+			atome = contenu[chain][13:16]
+			if atome not in acidea[newProt][chaine][residu].keys(): #si le atome n'existe pas deja pour une chaine et une residution donnée (ex : un CO de la chaine A a la residution -3)
+				acidea[newProt][chaine][residu][atome]= {}  #Creation du dictionnaire nom de l'atome, contenu dans le dictionnaire residution lui meme contenu dans le dictionnaire chaine	
 			
 			#repartition de l'information dans le dictionnaire.
-			acidea[newProt][Chaine][Posi][residu]["x"] = contenu[chain][32:38] #Mise des information de X dans le dictionnaire atome
-			acidea[newProt][Chaine][Posi][residu]["y"] = contenu[chain][40:46] #Mise des information de Y dans le dictionnaire atome
-			acidea[newProt][Chaine][Posi][residu]["z"] = contenu[chain][48:54] #Meme chose pour Z
-			acidea[newProt][Chaine][Posi][residu]["Id"] = contenu[chain][9:11] #Meme chose pour Identifiant
+			acidea[newProt][chaine][residu][atome]["x"] = contenu[chain][32:38] #Mise des information de X dans le dictionnaire atome
+			acidea[newProt][chaine][residu][atome]["y"] = contenu[chain][40:46] #Mise des information de Y dans le dictionnaire atome
+			acidea[newProt][chaine][residu][atome]["z"] = contenu[chain][48:54] #Meme chose pour Z
+			acidea[newProt][chaine][residu][atome]["Id"] = contenu[chain][9:11] #Meme chose pour Identifiant
 
 	return( acidea)
 
@@ -70,23 +70,23 @@ fichier = raw_input ("Saississez le nom de votre fichier avec le format (ex: arg
 ParserPDB(fichier)
 
 dddd_result = ParserPDB(fichier)
-print(dddd_result)
+#~ print(dddd_result)
 
 Affichage(dddd_result)
 
 
 
-if __name__ == "main":
+#~ if __name__ == "main":
 
-	try:
-		fichier = raw_input ("Saississez le nom de votre fichier avec le format (ex: arginine.pdb):")
-		ParserPDB(fichier)
+	#~ try:
+		#~ fichier = raw_input ("Saississez le nom de votre fichier avec le format (ex: arginine.pdb):")
+		#~ ParserPDB(fichier)
 
-		dddd_result = ParserPDB(fichier)
+		#~ dddd_result = ParserPDB(fichier)
 
-		Affichage(dddd_result)
-	except:
-		print("Ce fichier n'existe pas")
+		#~ Affichage(dddd_result)
+	#~ except:
+		#~ print("Ce fichier n'existe pas")
 
 
 

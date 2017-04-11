@@ -1,69 +1,56 @@
 #!/usr/bin/env python
 #-*- coding : utf8 -*-
 
+from math import sqrt
+#### PARCER PDB #######
 
-"""
-Author: Hugo ARBES
-Contact: hugo.arbes@u-psud.fr
-Date: 13/03/2017
-Description: Script containing many useful functions for parsing and processing PDF files (i.e. 3D structure of proteins)
-Licence (que je garde car elle me semble parfaite): DSSL (http://dssl.flyounet.net/)
-"""
+def ParserPDB(a):
+	""" Ce programme prace un fichier au format PDB en format lisible par Python """
+	contenu=list()
+	mon_fichier=open(a,"r")
+	for line in mon_fichier.readlines():
+		contenu.append(line.strip())    #met le contenu du fichier pdb dans la liste "contenu"
 
-
-
-def Parcer_PDB(entree) :
-	"""
-	Fonction permettant de creer un dictionnaire definissant une proteine en prenant un fichier PDB en parametre
-
-	Hugo ARBES le 06/03/2017 : Parser de fichier PDB
-	"""
+	acidea=dict()
 	
-	try :
-		pdb = open(entree,"r")
-		lines = pdb.readlines()
-		pdb.close()
+
+
+	for chain in range(len(contenu)): #On parcourt cette liste contenant tout le fichier pdb
+		if contenu[chain][0:5]=="TITLE":
+			newProt = contenu[chain][56:76]
+			
+			if newProt not in acidea.keys():
+				acidea[newProt]={}
 		
-	except :
-		print "Le fichier ne s'est pas ouvert correctement"
-
-
-	nbr_ligne = len(lines)
-	dico = {}
-	dico["Chaine"] = []
-	
-	for i in range(nbr_ligne):
 		
-		if(lines[i][0:4] == "ATOM"):
-			if((lines[i][16] == "A") or (lines[i][16] == " ")):
+		else:							# POUR LES TEEEEEEEEESTS MAIS A ENLEEEEEVEEEEEEEEEEEEER
+			newProt="1"
+			if newProt not in acidea.keys():
+				acidea[newProt]={}
 				
-				chain = lines[i][21:22]
-				
-				if not chain in dico["Chaine"]:
-					dico["Chaine"].append(chain)
-					dico[chain]= {}
-					dico[chain]["Residus"] = []
-						
-				residu = lines[i][24:26]
-				
-				if not residu in dico[chain]["Residus"]:
-					dico[chain]["Residus"].append(residu)
-					dico[chain][residu]= {}
-					dico[chain][residu]["Atome"] = []
-				
-				atom = lines[i][13:15]
-				
-				if not atom in dico[chain][residu]["Atome"]:
-					dico[chain][residu]["Atome"].append(atom)
-					dico[chain][residu][atom] = {}
-				
-				dico[chain][residu][atom]["Name"] = lines[i][13:15]
-				dico[chain][residu][atom]["x"] = lines[i][31:38]
-				dico[chain][residu][atom]["y"] = lines[i][39:46]
-				dico[chain][residu][atom]["z"] = lines[i][47:54]
-	
-	return dico
+		
+		
+		if contenu[chain][0:4]=="ATOM":   #Si la ligne commence par "ATOM" 
+			chaine = contenu[chain][21]
+			
+			if chaine not in acidea[newProt].keys(): #Si la chaine ( A, B ... ) existe pas deja 
+				acidea[newProt][chaine] = {}     #creation du dictionnaire qui a pour nom les caracteres a la ligne 21 ( chaine)
+			
+			residu = contenu[chain][24:26]
+			if residu not in acidea[newProt][chaine].keys(): #Si la residution pour une chaine n'existe pas deja (ex : -3 dans la chaine A)
+				acidea[newProt][chaine][residu]={} # creation du dictionnaire poisition dans le dictionnaire chaine 
+			
+			atome = contenu[chain][13:16]
+			if atome not in acidea[newProt][chaine][residu].keys(): #si le atome n'existe pas deja pour une chaine et une residution donnee (ex : un CO de la chaine A a la residution -3)
+				acidea[newProt][chaine][residu][atome]= {}  #Creation du dictionnaire nom de l'atome, contenu dans le dictionnaire residution lui meme contenu dans le dictionnaire chaine	
+			
+			#repartition de l'information dans le dictionnaire.
+			acidea[newProt][chaine][residu][atome]["x"] = contenu[chain][32:38] #Mise des information de X dans le dictionnaire atome
+			acidea[newProt][chaine][residu][atome]["y"] = contenu[chain][40:46] #Mise des information de Y dans le dictionnaire atome
+			acidea[newProt][chaine][residu][atome]["z"] = contenu[chain][48:54] #Meme chose pour Z
+			acidea[newProt][chaine][residu][atome]["Id"] = contenu[chain][9:11] #Meme chose pour Identifiant
 
+	return( acidea)
 
 
 def CentreMasseResidu(dictionnaire_residu):	# Mettre dico de 1 residu
@@ -82,17 +69,14 @@ def CentreMasseResidu(dictionnaire_residu):	# Mettre dico de 1 residu
 	# Ajout de toutes les coordonnees des atomes du residu
 	for atom_compare in dictionnaire_residu.keys():
 			for atom_reference in atomicMass.keys():
-				print(atom_reference)
-				print(atom_compare + "\n")
-				if (atom_reference == atom_compare) :
-					print("FUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUCK")
+				if atom_reference in atom_compare:
 					mass = atomicMass[atom_reference]
 				
-			x += mass*dictionnaire_residu[atom_compare]['x']
-			y += mass*dictionnaire_residu[atom_compare]['y']
-			z += mass*dictionnaire_residu[atom_compare]['z']
+			x += mass*float(dictionnaire_residu[atom_compare]['x'])
+			y += mass*float(dictionnaire_residu[atom_compare]['y'])
+			z += mass*float(dictionnaire_residu[atom_compare]['z'])
 			mass_totale += mass
-			
+			#~ print(mass)
 	# On divise par la masse totale des atomes pour avoir les coordonnees du centre de masse du residu:
 	cm_res['x'] = x/mass_totale
 	cm_res['y'] = y/mass_totale
@@ -102,22 +86,20 @@ def CentreMasseResidu(dictionnaire_residu):	# Mettre dico de 1 residu
 
 
 
-
-
-
 if __name__ == '__main__':
 	
-	#~ import json
-	#~ print("Donnees pour l'arginine : \n"+json.dumps(ParcerPDB("1EJH.pdb"), indent = 4))
+	import json
+	print("Donnees pour l'arginine : \n"+json.dumps(ParserPDB("1EJH.pdb"), indent = 4))
 	
 	#~ fichier = raw_input ("Saississez le nom de votre fichier avec le format (ex: arginine.pdb):")
 	
-	dico = ParcerPDB("1EJH.pdb")
-	print(dico)
-	print("\n")
-	print(dico.keys())
-	print(dico["A"].keys())
-	CentreDeMasse = CentreMasseResidu(dico["A"]["03"])
-
-
+	dico = ParserPDB("1EJH.pdb")
+	#~ print(dico)
+	#~ print("\n")
+	#~ print(dico.keys())
+	#~ print(dico["1"].keys())
+	#~ print(dico["1"]["A"].keys())
+	#~ print(dico["1"]["A"]["03"].keys())
+	CentreDeMasse = CentreMasseResidu(dico["1"]["A"]["03"])
+	print(CentreDeMasse)
 

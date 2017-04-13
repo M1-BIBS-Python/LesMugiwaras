@@ -23,13 +23,6 @@ def ParserPDB(a):
 				acidea[newProt]={}
 		
 		
-		else:							# POUR LES TEEEEEEEEESTS MAIS A ENLEEEEEVEEEEEEEEEEEEER
-			newProt="1"
-			if newProt not in acidea.keys():
-				acidea[newProt]={}
-				
-		
-		
 		if contenu[chain][0:4]=="ATOM":   #Si la ligne commence par "ATOM" 
 			chaine = contenu[chain][21]
 			
@@ -78,11 +71,10 @@ def CentreMasseProt(dictionnaire_proteine):
 
 def CentreMasseResidu(dictionnaire_residu):
 	
-	atomicMass = dict()
-	atomicMass = {"C": float(12.0107), "S": float(32.065), 
-				  "O ": float(15.9994), "N ": float(14.0067),
-				  "OH": float(17.0073), "NH": float(15.0146)}
-	
+	masse_molaire = dict()
+	masse_molaire = {	"H": float(1.0079),		"C": float(12.0107),
+						"O": float(15.9994),	"N": float(14.0067),
+						"S": float(32.065)}
 	x = 0
 	y = 0
 	z = 0
@@ -91,16 +83,20 @@ def CentreMasseResidu(dictionnaire_residu):
 	
 	# Ajout de toutes les coordonnees des atomes du residu
 	for atom_compare in dictionnaire_residu.keys():
-			for atom_reference in atomicMass.keys():
-				if atom_reference in atom_compare:
-					masse_atome = atomicMass[atom_reference]
+		masse_atome = 0
+		for atom_reference in masse_molaire.keys():
+			if atom_reference in atom_compare:
+				if atom_reference is "H":	# On effectue ce test car il peut y avoir des H seuls ou NH ou OH
+					masse_atome += 1.0079
+				else:
+					masse_atome = masse_molaire[atom_reference]
 				
-			x += masse_atome * float(dictionnaire_residu[atom_compare]['x'])
-			y += masse_atome * float(dictionnaire_residu[atom_compare]['y'])
-			z += masse_atome * float(dictionnaire_residu[atom_compare]['z'])
-			masse_totale_residu += masse_atome
-			
-	# On divise par la masse totale des atomes pour avoir les coordonnees du centre de masse du residu
+		x += masse_atome * float(dictionnaire_residu[atom_compare]['x'])
+		y += masse_atome * float(dictionnaire_residu[atom_compare]['y'])
+		z += masse_atome * float(dictionnaire_residu[atom_compare]['z'])
+		masse_totale_residu += masse_atome
+	
+	# On divise par la masse cumulee des atomes pour avoir les coordonnees du centre de masse du residu
 	centre_masse_residu['x'] = x / masse_totale_residu
 	centre_masse_residu['y'] = y / masse_totale_residu
 	centre_masse_residu['z'] = z / masse_totale_residu
@@ -129,11 +125,12 @@ def RayonProt(dictionnaire_proteine):
 if __name__ == '__main__':
 	
 	import json
-	print(json.dumps(ParserPDB("1EJH.pdb"), indent = 4))
+	print(json.dumps(ParserPDB("ClientTest.pdb"), indent = 4))
 	
 	#~ fichier = raw_input ("Saississez le nom de votre fichier avec le format (ex: arginine.pdb):")
 	
-	dico = ParserPDB("1EJH.pdb")
+	dico = ParserPDB("ClientTest.pdb")
+	
 	CentreDeMasseProt = CentreMasseProt(dico)
 	print CentreDeMasseProt
 	rayon_proteine = RayonProt(dico)

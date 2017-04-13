@@ -26,8 +26,8 @@ def ParserPDB(a):
 		if contenu[chain][0:4]=="ATOM":   #Si la ligne commence par "ATOM" 
 			chaine = contenu[chain][21]
 			
-			if chaine not in acidea[newProt].keys(): #Si la chaine ( A, B ... ) existe pas deja 
-				acidea[newProt][chaine] = {}     #creation du dictionnaire qui a pour nom les caracteres a la ligne 21 ( chaine)
+			if chaine not in acidea[newProt].keys(): 	#Si la chaine ( A, B, ... ) n'existe pas deja 
+				acidea[newProt][chaine] = {}     		#creation du dictionnaire qui a pour nom les caracteres a la ligne 21 ( chaine)
 			
 			residu = contenu[chain][24:26]
 			if residu not in acidea[newProt][chaine].keys(): #Si la residution pour une chaine n'existe pas deja (ex : -3 dans la chaine A)
@@ -46,7 +46,7 @@ def ParserPDB(a):
 	return(acidea)
 
 
-def CentreMasseProt(dictionnaire_proteine):
+def CentreMasseProt(dico_proteine):
 	
 	nbr_residus = 0
 	x = 0
@@ -55,12 +55,12 @@ def CentreMasseProt(dictionnaire_proteine):
 	centre_masse_prot = {}
 	
 	# Ajout de toutes les coordonnees des centres de masse de tous les residus
-	for Proteine in dictionnaire_proteine.keys():
-		for Chaine in dictionnaire_proteine[Proteine].keys():
-			for Residu in dictionnaire_proteine[Proteine][Chaine].keys():
-				x += CentreMasseResidu(dictionnaire_proteine[Proteine][Chaine][Residu])['x']
-				y += CentreMasseResidu(dictionnaire_proteine[Proteine][Chaine][Residu])['y']
-				z += CentreMasseResidu(dictionnaire_proteine[Proteine][Chaine][Residu])['z']
+	for Proteine in dico_proteine.keys():
+		for Chaine in dico_proteine[Proteine].keys():
+			for Residu in dico_proteine[Proteine][Chaine].keys():
+				x += CentreMasseResidu(dico_proteine[Proteine][Chaine][Residu])['x']
+				y += CentreMasseResidu(dico_proteine[Proteine][Chaine][Residu])['y']
+				z += CentreMasseResidu(dico_proteine[Proteine][Chaine][Residu])['z']
 				nbr_residus += 1
 				
 	centre_masse_prot['x'] = x / nbr_residus
@@ -69,7 +69,7 @@ def CentreMasseProt(dictionnaire_proteine):
 	
 	return centre_masse_prot
 
-def CentreMasseResidu(dictionnaire_residu):
+def CentreMasseResidu(dico_residu):
 	
 	masse_molaire = dict()
 	masse_molaire = {	"H": float(1.0079),		"C": float(12.0107),
@@ -82,7 +82,7 @@ def CentreMasseResidu(dictionnaire_residu):
 	centre_masse_residu = {}
 	
 	# Ajout de toutes les coordonnees des atomes du residu
-	for atom_compare in dictionnaire_residu.keys():
+	for atom_compare in dico_residu.keys():
 		masse_atome = 0
 		for atom_reference in masse_molaire.keys():
 			if atom_reference in atom_compare:
@@ -91,9 +91,9 @@ def CentreMasseResidu(dictionnaire_residu):
 				else:
 					masse_atome = masse_molaire[atom_reference]
 				
-		x += masse_atome * float(dictionnaire_residu[atom_compare]['x'])
-		y += masse_atome * float(dictionnaire_residu[atom_compare]['y'])
-		z += masse_atome * float(dictionnaire_residu[atom_compare]['z'])
+		x += masse_atome * float(dico_residu[atom_compare]['x'])
+		y += masse_atome * float(dico_residu[atom_compare]['y'])
+		z += masse_atome * float(dico_residu[atom_compare]['z'])
 		masse_totale_residu += masse_atome
 	
 	# On divise par la masse cumulee des atomes pour avoir les coordonnees du centre de masse du residu
@@ -105,21 +105,48 @@ def CentreMasseResidu(dictionnaire_residu):
 
 
 
-def RayonProt(dictionnaire_proteine):
+def RayonProt(dico_proteine):
 	
-	CdM_prot = CentreMasseProt(dictionnaire_proteine)
+	CdM_prot = CentreMasseProt(dico_proteine)
 	le_plus_loin = 0
 	
-	for Proteine in dictionnaire_proteine.keys():
-		for Chaine in dictionnaire_proteine[Proteine].keys():
-			for Residu in dictionnaire_proteine[Proteine][Chaine].keys():
-				parcourt = CentreMasseResidu(dictionnaire_proteine[Proteine][Chaine][Residu])
+	for Proteine in dico_proteine.keys():
+		for Chaine in dico_proteine[Proteine].keys():
+			for Residu in dico_proteine[Proteine][Chaine].keys():
+				parcourt = CentreMasseResidu(dico_proteine[Proteine][Chaine][Residu])
 				distant = sqrt(pow(CdM_prot['x']-parcourt['x'],2) + pow(CdM_prot['y']-parcourt['y'],2) + pow(CdM_prot['z']-parcourt['z'],2))
 				if distant > le_plus_loin :
 					le_plus_loin = distant
 	
 	return le_plus_loin
 
+
+def DistanceCentre(dico_complexe_prot):
+	
+	compteur_prot = 0
+	distance_centre = {}
+	centre_masse_prot = CentreMasseProt(dico_complexe_prot)
+	
+	for Proteine in dico_complexe_prot.keys():
+		compteur_prot += 1
+		#~ print ("prot :"+Proteine)
+		#~ print dico_complexe_prot[Proteine].keys()
+		for Chaine in dico_complexe_prot[Proteine].keys():
+			#~ print Chaine
+			if Chaine not in distance_centre.keys():
+				#~ print "initialise"
+				distance_centre[Chaine] = {}
+			
+			for Residu in dico_complexe_prot[Proteine][Chaine].keys():
+				if Residu not in distance_centre[Chaine].keys():
+					#~ print "initialise"
+					distance_centre[Chaine][Residu] = 0
+				
+				parcourt = CentreMasseResidu(dico_complexe_prot[Proteine][Chaine][Residu])
+				#~ print parcourt
+				distance_centre[Chaine][Residu] += sqrt(pow(centre_masse_prot['x']-parcourt['x'],2) + pow(centre_masse_prot['y']-parcourt['y'],2) + pow(centre_masse_prot['z']-parcourt['z'],2)) / compteur_prot
+		#~ print compteur_prot
+	return distance_centre
 
 
 if __name__ == '__main__':
@@ -129,9 +156,11 @@ if __name__ == '__main__':
 	
 	#~ fichier = raw_input ("Saississez le nom de votre fichier avec le format (ex: arginine.pdb):")
 	
-	dico = ParserPDB("ClientTest.pdb")
+	dico_complexe_prot = ParserPDB("ClientTest.pdb")
 	
-	CentreDeMasseProt = CentreMasseProt(dico)
+	CentreDeMasseProt = CentreMasseProt(dico_complexe_prot)
 	print CentreDeMasseProt
-	rayon_proteine = RayonProt(dico)
+	rayon_proteine = RayonProt(dico_complexe_prot)
 	print(rayon_proteine)
+	dico_distances = DistanceCentre(dico_complexe_prot)
+	print dico_distances

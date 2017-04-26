@@ -2,48 +2,7 @@
 #-*- coding : utf8 -*-
 
 from math import sqrt
-#### PARCER PDB #######
 
-def ParserPDB(a):
-	""" Ce programme prace un fichier au format PDB en format lisible par Python """
-	contenu=list()
-	mon_fichier=open(a,"r")
-	for line in mon_fichier.readlines():
-		contenu.append(line.strip())    #met le contenu du fichier pdb dans la liste "contenu"
-
-	acidea=dict()
-	
-
-
-	for chain in range(len(contenu)): #On parcourt cette liste contenant tout le fichier pdb
-		if contenu[chain][0:5]=="TITLE":
-			newProt = contenu[chain][56:76]
-			
-			if newProt not in acidea.keys():
-				acidea[newProt]={}
-		
-		
-		if contenu[chain][0:4]=="ATOM":   #Si la ligne commence par "ATOM" 
-			chaine = contenu[chain][21]
-			
-			if chaine not in acidea[newProt].keys(): 	#Si la chaine ( A, B, ... ) n'existe pas deja 
-				acidea[newProt][chaine] = {}     		#creation du dictionnaire qui a pour nom les caracteres a la ligne 21 ( chaine)
-			
-			residu = contenu[chain][24:26]
-			if residu not in acidea[newProt][chaine].keys(): #Si la residution pour une chaine n'existe pas deja (ex : -3 dans la chaine A)
-				acidea[newProt][chaine][residu]={} # creation du dictionnaire poisition dans le dictionnaire chaine 
-			
-			atome = contenu[chain][13:16]
-			if atome not in acidea[newProt][chaine][residu].keys(): #si le atome n'existe pas deja pour une chaine et une residution donnee (ex : un CO de la chaine A a la residution -3)
-				acidea[newProt][chaine][residu][atome]= {}  #Creation du dictionnaire nom de l'atome, contenu dans le dictionnaire residution lui meme contenu dans le dictionnaire chaine	
-			
-			#repartition de l'information dans le dictionnaire.
-			acidea[newProt][chaine][residu][atome]["x"] = contenu[chain][32:38] #Mise des information de X dans le dictionnaire atome
-			acidea[newProt][chaine][residu][atome]["y"] = contenu[chain][40:46] #Mise des information de Y dans le dictionnaire atome
-			acidea[newProt][chaine][residu][atome]["z"] = contenu[chain][48:54] #Meme chose pour Z
-			acidea[newProt][chaine][residu][atome]["Id"] = contenu[chain][9:11] #Meme chose pour Identifiant
-
-	return(acidea)
 
 
 def CentreMasseProt(dico_proteine):
@@ -69,6 +28,7 @@ def CentreMasseProt(dico_proteine):
 	
 	return centre_masse_prot
 
+
 def CentreMasseResidu(dico_residu):
 	
 	masse_molaire = dict()
@@ -86,10 +46,7 @@ def CentreMasseResidu(dico_residu):
 		masse_atome = 0
 		for atom_reference in masse_molaire.keys():
 			if atom_reference in atom_compare:
-				if atom_reference is "H":	# On effectue ce test car il peut y avoir des H seuls ou NH ou OH
-					masse_atome += 1.0079
-				else:
-					masse_atome = masse_molaire[atom_reference]
+				masse_atome += masse_molaire[atom_reference]
 				
 		x += masse_atome * float(dico_residu[atom_compare]['x'])
 		y += masse_atome * float(dico_residu[atom_compare]['y'])
@@ -121,46 +78,30 @@ def RayonProt(dico_proteine):
 	return le_plus_loin
 
 
+
 def DistanceCentre(dico_complexe_prot):
 	
 	compteur_prot = 0
 	distance_centre = {}
 	centre_masse_prot = CentreMasseProt(dico_complexe_prot)
 	
-	for Proteine in dico_complexe_prot.keys():
+	for Proteine in dico_complexe_prot.keys():							# Pour chaque proteine
 		compteur_prot += 1
-		#~ print ("prot :"+Proteine)
-		#~ print dico_complexe_prot[Proteine].keys()
-		for Chaine in dico_complexe_prot[Proteine].keys():
-			#~ print Chaine
-			if Chaine not in distance_centre.keys():
-				#~ print "initialise"
-				distance_centre[Chaine] = {}
+		for Chaine in dico_complexe_prot[Proteine].keys():				# Pour chaque chaine de la proteine
+			if Chaine not in distance_centre.keys():					# Si elle n'existe pas
+				distance_centre[Chaine] = {}							# On cree son dico correspondant
 			
-			for Residu in dico_complexe_prot[Proteine][Chaine].keys():
-				if Residu not in distance_centre[Chaine].keys():
-					#~ print "initialise"
-					distance_centre[Chaine][Residu] = 0
+			for Residu in dico_complexe_prot[Proteine][Chaine].keys():	# Pour chaque residu de la chaine
+				if Residu not in distance_centre[Chaine].keys():		# S'il n'existe pas
+					distance_centre[Chaine][Residu] = 0					# On le cree
+				parcourt = CentreMasseResidu(dico_complexe_prot[Proteine][Chaine][Residu])		# On stocke la valeur du centre de masse de ce residu
 				
-				parcourt = CentreMasseResidu(dico_complexe_prot[Proteine][Chaine][Residu])
-				#~ print parcourt
-				distance_centre[Chaine][Residu] += sqrt(pow(centre_masse_prot['x']-parcourt['x'],2) + pow(centre_masse_prot['y']-parcourt['y'],2) + pow(centre_masse_prot['z']-parcourt['z'],2)) / compteur_prot
-		#~ print compteur_prot
+				# On calcule la distance au centre des differentes conformation de la proteine pour chaque residu et on fait leur moyenne
+				# On utilise cette formule pour ne pas avoir a refaire une boucle pour tout parcourir et diviser par le nombre de chaines de la proteine
+				distance_centre[Chaine][Residu] = ((distance_centre[Chaine][Residu]*(compteur_prot-1)) +
+													sqrt(
+													pow(centre_masse_prot['x']-parcourt['x'],2) +
+													pow(centre_masse_prot['y']-parcourt['y'],2) +
+													pow(centre_masse_prot['z']-parcourt['z'],2))
+													) / compteur_prot
 	return distance_centre
-
-
-if __name__ == '__main__':
-	
-	import json
-	print(json.dumps(ParserPDB("ClientTest.pdb"), indent = 4))
-	
-	#~ fichier = raw_input ("Saississez le nom de votre fichier avec le format (ex: arginine.pdb):")
-	
-	dico_complexe_prot = ParserPDB("ClientTest.pdb")
-	
-	CentreDeMasseProt = CentreMasseProt(dico_complexe_prot)
-	print CentreDeMasseProt
-	rayon_proteine = RayonProt(dico_complexe_prot)
-	print(rayon_proteine)
-	dico_distances = DistanceCentre(dico_complexe_prot)
-	print dico_distances

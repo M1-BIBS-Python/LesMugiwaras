@@ -13,8 +13,8 @@ from RMSDlocaux import RMSDlocaux
 from RMSDlocaux import graph
 from RMSDglobaux import RMSD
 from RMSDglobaux import graphglob
-from TestParcer import ParserPDB
-from TestParcer import Affichage
+from ParcerPDB import ParserPDB
+from ParcerPDB import Affichage
 
 
 ########### MAIN ###############

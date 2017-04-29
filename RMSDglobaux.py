@@ -11,8 +11,8 @@ Comprend aussi une fonction graphique pour observer la RMSD graphiquement. """
 ####################### IMPORT #####################
 from math import sqrt
 #### PARCER PDB #######
-from TestParcer import ParserPDB
-from TestParcer import Affichage
+from ParcerPDB import ParserPDB
+from ParcerPDB import Affichage
 
 #### librairie graphique ####
 from matplotlib import pyplot as plt

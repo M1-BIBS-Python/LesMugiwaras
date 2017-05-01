@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-#
+
 
 """
 Auteur : HENRIQUES Adrien et ARBES Hugo 
@@ -85,10 +85,10 @@ def graph (dico):
 	
 	x= list()
 	y=list()
-	for prot in dico.keys(): #On parcourt le dictionnaire mit en paramètre
-		for position in sorted(dico[prot].keys()): #on parcourt son 2ieme niveau de dictionnaire correspondant aux positions differentes
+	for chaine in dico.keys(): #On parcourt le dictionnaire mit en paramètre
+		for position in sorted(dico[chaine].keys()): #on parcourt son 2ieme niveau de dictionnaire correspondant aux positions differentes
 			x.append(position) #On concatene la position dans la liste X
-			y.append(dico[prot][position]) #On concatene les valeurs des positions dans la liste Y
+			y.append(dico[chaine][position]) #On concatene les valeurs des positions dans la liste Y
 	
 	plt.plot(x, y) #Graphique des RMSDlocales moyenne en fonction des positions
 	plt.title("Regions flexibles")
@@ -101,17 +101,19 @@ def graph (dico):
 
 ################## MAIN ###########################
 
-if __name__ == "main":
+if __name__ == 'main':
 	try:
 		fichier1 = raw_input ("Saississez le nom de votre fichier de reference avec le format (ex: arginine.pdb):")
+		fichier1 = open("start_prot_only.pdb")
 		result_fichier1 = ParserPDB(fichier1)
 		#Affichage(result_fichier1)
 	except:
 		print("Ce fichier n'existe pas")
 
-	
+
 	try:
 		fichier2 = raw_input ("Saississez le nom de votre fichier avec le format (ex: arginine.pdb):")
+		fichier2 = open("_md_prot_only_skip100.pdb")
 		result_fichier2 = ParserPDB(fichier2)
 		#Affichage(result_fichier1)
 	except:

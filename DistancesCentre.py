@@ -33,9 +33,9 @@ def DistanceCentre(dico_proteine):
 				# On utilise cette formule pour ne pas avoir a refaire une boucle pour tout parcourir et diviser par le nombre de chaines de la proteine
 				distance_centre[Chaine][Residu] = ((distance_centre[Chaine][Residu]*(compteur_prot-1)) +
 													sqrt(
-													pow(centre_masse_prot['x']-parcourt['x'],2) +
-													pow(centre_masse_prot['y']-parcourt['y'],2) +
-													pow(centre_masse_prot['z']-parcourt['z'],2))
+													pow(centre_masse_prot[Proteine]['x']-parcourt['x'],2) +
+													pow(centre_masse_prot[Proteine]['y']-parcourt['y'],2) +
+													pow(centre_masse_prot[Proteine]['z']-parcourt['z'],2))
 													) / compteur_prot
 	
 	return distance_centre												# On retourne le dictionnaire des distances au centre moyennes de chaque residu

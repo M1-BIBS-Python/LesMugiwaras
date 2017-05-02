@@ -24,7 +24,7 @@ def RayonProt(dico_proteine):
 				parcourt = CentreMasseResidu(dico_proteine[Proteine][Chaine][Residu])
 				
 				# On calcule la distance entre le centre de masse et chaque residu
-				distant = sqrt(pow(CdM_prot['x']-parcourt['x'],2) + pow(CdM_prot['y']-parcourt['y'],2) + pow(CdM_prot['z']-parcourt['z'],2))
+				distant = sqrt(pow(CdM_prot[Proteine]['x']-parcourt['x'],2) + pow(CdM_prot[Proteine]['y']-parcourt['y'],2) + pow(CdM_prot[Proteine]['z']-parcourt['z'],2))
 				
 				# Si cette distance est superieure a la plus grande trouvee pour les conformations observees precedemment
 				if distant > dico_rayon[Proteine] :						# Pour la premiere valeur on rentre toujours dans le test car distant est positif

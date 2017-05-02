@@ -14,6 +14,7 @@ def CentreMasseProt(dico_proteine):
 	
 	# Ajout de toutes les coordonnees des centres de masse de tous les residus
 	for Proteine in dico_proteine.keys():								# Pour chaque conformation de la proteine
+		centre_masse_prot[Proteine] = {}								# On cree un dictionnaire contenant son centre de masse
 		for Chaine in dico_proteine[Proteine].keys():					# Pour chaque chaine de cette conformation
 			for Residu in dico_proteine[Proteine][Chaine].keys():		# Pourchaque residu de cette chaine
 				
@@ -23,10 +24,10 @@ def CentreMasseProt(dico_proteine):
 				z += CentreMasseResidu(dico_proteine[Proteine][Chaine][Residu])['z']
 				nbr_residus += 1
 				
-	# On fait la moyenne des coordonnees
-	centre_masse_prot['x'] = x / nbr_residus
-	centre_masse_prot['y'] = y / nbr_residus
-	centre_masse_prot['z'] = z / nbr_residus
+		# On fait la moyenne des coordonnees
+		centre_masse_prot[Proteine]['x'] = x / nbr_residus
+		centre_masse_prot[Proteine]['y'] = y / nbr_residus
+		centre_masse_prot[Proteine]['z'] = z / nbr_residus
 	
 	return centre_masse_prot											# On retourne le centre de masse
 

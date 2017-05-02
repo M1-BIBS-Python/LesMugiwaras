@@ -4,7 +4,10 @@
 """
 Auteur : HENRIQUES Adrien et ARBES Hugo 
 date : 28/04/2017
-Programme Distances : calcul des centres de masse pour chaque conformation et pour chaque residu
+Programme Distances : calcul des centres de masse pour chaque conformation et
+la distance separant chaque centre de masse d'un residu du centre de masse de la proteine.
+Permet egalement l'affichage graphique de ces distances en fonction de chaque residu
+et l'affichage des RMSD locales en fonction de ces distances
 """
 
 from math import sqrt

@@ -1,6 +1,11 @@
 #!/usr/bin/env python
 #-*- coding : utf8 -*-
 
+"""
+Auteur : HENRIQUES Adrien et ARBES Hugo 
+date : 28/04/2017
+Programme Distances : calcul des centres de masse pour chaque conformation et pour chaque residu
+"""
 
 from math import sqrt
 from matplotlib import pyplot as plt

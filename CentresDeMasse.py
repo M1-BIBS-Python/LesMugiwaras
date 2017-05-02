@@ -1,7 +1,10 @@
 #!/usr/bin/env python
 #-*- coding : utf8 -*-
 
-
+"""
+Auteur : HENRIQUES Adrien et ARBES Hugo 
+date : 28/04/2017
+Programme Centres de Masse : calcule des centres de masse pour chaque conformation et pour chaque residu"""
 
 # Fonction prenant en argument le dictionnaire des conformations de la proteine et retournant son centre de masse
 def CentreMasseProt(dico_proteine):

@@ -49,3 +49,4 @@ Le projet est composé de plusieurs fichiers qui sont des fonctions du programme
 LesMugiwaras : ARBES HUGO et HENRIQUES ADRIEN
 
 # License
+Le projet Barstar de la team LesMugiwaras est libre de droits 

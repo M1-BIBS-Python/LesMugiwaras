@@ -12,6 +12,7 @@ from RayonGiration import RayonProt
 from RayonGiration import GraphDesRayons
 from DistancesCentre import DistanceCentre
 from DistancesCentre import GraphDesDistances
+from DistancesCentre import GraphEnfouissementRMSD
 
 from Scribe import ScribeGlobal
 from Scribe import ScribeLocal
@@ -26,68 +27,51 @@ from ParcerPDB import Affichage
 ########### MAIN ###############
 
 try:
-	fichier1 = raw_input ("Saississez le nom de votre fichier de reference avec le format (ex: reference.pdb):")
-	fichier2 = raw_input ("Saississez le nom de votre fichier avec le format (ex: prot_test1.pdb):")
-	#~ monfichier1 = open("start_prot_only.pdb",'r')
-	#~ print "AAAAAAAAAAAAAAAA"
-	#~ fichier1 = monfichier.read()
-	#~ print "UUUUUUUUUUUUUU"
-	#Affichage(result_fichier1)
-	#~ fichier2 = open("md_prot_only_skip100.pdb",'r')
-	#Affichage(result_fichier1)
-	#~ print "OOOOOOOOO"
+	fichier1 = raw_input ("Saississez le nom de votre fichier de reference avec le format (ex: start_prot_only.pdb):")
+	fichier2 = raw_input ("Saississez le nom de votre fichier avec le format (ex: md_prot_only_skip100.pdb):")
 	
 except:
-	print("Au moins l'un des deux fichiers specifies n'existe pas ! ")
+	print("Au moins l'un des deux fichiers specifies n'existe pas !")
 
 
 try:
 	result_fichier1 = ParserPDB(fichier1)
 	result_fichier2 = ParserPDB(fichier2)
 except:
-	print("Le parsing des fichiers n'a pas fonctionne correctement")
+	print("Le parsing des fichiers n'a pas pu s'effectuer correctement")
 
 
 try:
-	print "AAAAAAAAAAAAAA1"
 	# Appel des fonctions de calcul des centres de masse de la proteine de reference et des conformation + affichage pour chaque conformation
-	#~ CentreDeMasseProt = CentreMasseProt(result_fichier2)
 	rayon_proteine = RayonProt(result_fichier2)
-	print "PPPPPPPPPPPPP1"
 	GraphDesRayons(rayon_proteine)
 
-	print "AAAAAAAAAAAAAA2"
 	#Appel des fonction de calcul de RMSD global + affichage
 	RmsdGlobal= RMSD(result_fichier1,result_fichier2)
-	print "PPPPPPPPPPPPP2"
 	graphglob(RmsdGlobal)
 
-	print "QQQQQQQQQQQQ"
 	ScribeGlobal(RmsdGlobal,rayon_proteine)
 
 except:
-	print("L'analyse globale n'a pas ete correctement effectuee")
+	print("L'analyse globale n'a pas pu s'effectuer correctement")
 
 
 try:
-	print "BBBBBBBBBBBB1"
 	# Appel des fonctions de calcul des distances de chaque residu par rapport au centre et affichage des ces distances
 	dico_distances = DistanceCentre(result_fichier2)
-	print "FFFFFFFFFFFF1"
 	GraphDesDistances(dico_distances)
 
-	print "BBBBBBBBBBBB2"
 	#Appel des fonction de calcul de RMSD locale + affichage
 	RmsdLocal= RMSDlocaux(result_fichier1,result_fichier2)
-	print "FFFFFFFFFFFF2"
 	graph(RmsdLocal)
-
-	print "HHHHHHHHHHHH"
+	
+	# Appel de la fonction d'affichage des RMSD en fonction de l'enfouissement
+	GraphEnfouissementRMSD(RmsdLocal,dico_distances)
+	
+	# Appel de la fonction d'ecriture dans le fichier de sortie
 	ScribeLocal(RmsdLocal,dico_distances)
 
-	print "CCCCCCCCCCCCCC"
-
 except:
-	print("L'analyse locale n'a pas ete correctement effectuee")
+	print("L'analyse locale n'a pas pu s'effectuer correctement")
 	
 

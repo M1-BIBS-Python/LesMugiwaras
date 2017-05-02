@@ -59,3 +59,26 @@ def GraphDesDistances(dico_distances_centre):
 	
 	return ()	
 
+def GraphEnfouissementRMSD(dicoRmsdloc,dico_distances):
+	
+	dico_graph = {}														# On cree le dictionnaire des RMSD et distances au centre
+	
+	for chaine in dicoRmsdloc.keys(): 									# Pour chaque chaine de la proteine
+		for position in sorted(dicoRmsdloc[chaine].keys()):				# Pour chaque position de residu
+			enfouissement = dico_distances[chaine][position]			# On stocke la distance
+			dico_graph[enfouissement] = dicoRmsdloc[chaine][position]	# On stocke la RSMD correpondante
+	
+	x = list()
+	y = list()
+	
+	for enfouissement in sorted(dico_graph.keys()): 					# Pour chaque distance au centre du residu
+			x.append(enfouissement)										# Concatenation de l'enfouissement du residu dans la liste x
+			y.append(dico_graph[enfouissement])							# Concatenation de la RMSD correspondante dans la liste y
+	
+	plt.plot(x, y)														# Graphique des distances au centre moyennes en fonction des positions pour chaque residu 
+	plt.title("RMSD moyennes des residus en fonction de leur enfouissement")
+	plt.xlabel("Distance moyenne au centre")
+	plt.ylabel("RMSD moyenne")
+	plt.show()
+	
+	return ()

@@ -1,6 +1,12 @@
 #!/usr/bin/env python
 #-*- coding : utf8 -*-
 
+"""
+Auteur : HENRIQUES Adrien et ARBES Hugo 
+date : 28/04/2017
+Programme Rayon de Giration : calcul du rayon de giration pour chaque conformation
+et la distance séparant chaque centre de masse d'un résidu du centre de masse de la protéine
+"""
 
 from math import sqrt
 from matplotlib import pyplot as plt

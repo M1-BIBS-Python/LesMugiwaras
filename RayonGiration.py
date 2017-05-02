@@ -5,7 +5,7 @@
 Auteur : HENRIQUES Adrien et ARBES Hugo 
 date : 28/04/2017
 Programme Rayon de Giration : calcul du rayon de giration pour chaque conformation
-et la distance séparant chaque centre de masse d'un résidu du centre de masse de la protéine
+et trace le graphique des rayons de giration en fonction des conformations
 """
 
 from math import sqrt

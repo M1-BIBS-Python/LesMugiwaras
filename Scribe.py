@@ -19,7 +19,7 @@ def ScribeGlobal(dicoRMSDglob,dico_giration):
 	for prot1 in sorted(dicoRMSDglob.keys()):							# Parcourt des conformations du dictionnaire de RMSD globale
 		nom_prot = str(prot1)
 		for prot2 in sorted(dicoRMSDglob[prot1].keys()): 				# Parcourt de proteine referente du dictionnaire de RMSD globale
-			donnees += str(prot2)+"\t\t\t"+str(prot1)+"\t\t\t\t"+str(round(dicoRMSDglob[prot1][prot2],3))+"\t"+str(round(dico_giration[prot1],3))+"\n" #Ce qu'on va ecrire a chaque ligne
+			donnees += str(prot2)+"\t\t\t"+str(prot1)+"\t\t"+str(round(dicoRMSDglob[prot1][prot2],3))+"\t"+str(round(dico_giration[prot1],3))+"\n" #Ce qu'on va ecrire a chaque ligne
 			
 	sortieGlobale.write(donnees)										# Ecriture dans le fichier de sortie 
 	sortieGlobale.close()												# Fermeture du fichier de sortie
@@ -34,7 +34,7 @@ def ScribeLocal(dicoRMSDloc,dico_distances):
 	for chaine in dicoRMSDloc.keys():									# On parcourt les differentes proteines de reference du dictionnaire de RMSDlocale
 		for position in sorted(dicoRMSDloc[chaine].keys()):				# On parcourt son 2eme niveau de dictionnaire correspondant aux positions differentes
 	
-			donneesloc += str(position)+"\t\t\t"+str(round(dicoRMSDloc[chaine][position],3))+"\t\t"+str(round(dico_distances[chaine][position]))+"\n"
+			donneesloc += str(position)+"\t\t"+str(round(dicoRMSDloc[chaine][position],3))+"\t"+str(round(dico_distances[chaine][position]))+"\n"
 			
 	
 	sortieLocale.write(donneesloc)

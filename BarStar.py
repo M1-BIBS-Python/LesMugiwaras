@@ -25,18 +25,21 @@ from ParcerPDB import Affichage
 
 
 ########### MAIN ###############
-
 try:
-	fichier1 = raw_input ("Saississez le nom de votre fichier de reference avec le format (ex: start_prot_only.pdb):")
-	fichier2 = raw_input ("Saississez le nom de votre fichier avec le format (ex: md_prot_only_skip100.pdb):")
+	try:
+		fichier1 = raw_input ("Saississez le nom de votre fichier de reference avec le format (ex: start_prot_only.pdb):")
+		result_fichier1 = ParserPDB(fichier1)
 	
-except:
-	print("Au moins l'un des deux fichiers specifies n'existe pas !")
-
-
-try:
-	result_fichier1 = ParserPDB(fichier1)
-	result_fichier2 = ParserPDB(fichier2)
+	except:
+		print("Ce fichier n'existe pas!")
+	
+	try:
+		fichier2 = raw_input ("Saississez le nom de votre fichier avec le format (ex: md_prot_only_skip100.pdb):")
+		result_fichier2 = ParserPDB(fichier2)
+	except:
+		print("Ce fichier n'existe pas !")
+	
+	
 except:
 	print("Le parsing des fichiers n'a pas pu s'effectuer correctement")
 
